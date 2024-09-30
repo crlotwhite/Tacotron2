@@ -103,7 +103,7 @@ if __name__ == '__main__':
             writer.add_scalar('Loss/train', train_loss, epoch)
             writer.add_scalar('Loss/valid', test_loss, epoch)
 
-            if (epoch + 5) % 2 == 0:
+            if epoch % 5 == 0:
                 batch = next(iter(test_loader))
                 x, y = Tacotron2.parse_batch(batch)
                 text_inputs, text_lengths, mels, max_len, output_lengths = x
