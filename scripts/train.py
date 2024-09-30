@@ -1,5 +1,7 @@
 import argparse
 import gc
+import os
+import sys
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -7,9 +9,14 @@ import torch.optim as optim
 from data.ljspeech import from_hf, vocab
 from models.tacotron import Tacotron2
 from models.loss import Tacotron2Loss
+from pathlib import Path
 from torch.utils.tensorboard import SummaryWriter
 from torchaudio.prototype.pipelines import HIFIGAN_VOCODER_V3_LJSPEECH as bundle
 from tqdm import tqdm
+
+root_dir = Path(__file__).parent.parent.resolve()
+os.environ['PYTHONPATH'] = str(root_dir)
+sys.path.insert(0, str(root_dir))
 
 def train_loop():
     total_loss = 0
@@ -79,11 +86,11 @@ if __name__ == '__main__':
     criterion = Tacotron2Loss()
     train_loader, test_loader = from_hf()
     vocoder = bundle.get_vocoder()
-    writer = SummaryWriter(log_dir=f'../logs/{args.experiment}')
+    writer = SummaryWriter(log_dir=f'logs/{args.experiment}')
     epoch_start = 1
 
     if args.resume_from > 0:
-        checkpoint = torch.load(f'../checkpoints/{args.experiment}/{args.experiment}_{args.resume_from}.pt')
+        checkpoint = torch.load(f'checkpoints/{args.experiment}/{args.experiment}_{args.resume_from}.pt')
         model.load_state_dict(checkpoint['model_state_dict'])
         optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
         epoch_start = checkpoint['epoch']
@@ -130,7 +137,7 @@ if __name__ == '__main__':
                     'epoch': epoch,
                     'model_state_dict': model.state_dict(),
                     'optimizer_state_dict': optimizer.state_dict(),
-                }, f'../checkpoints/{args.experiment}/{args.experiment}_{epoch}.pt')
+                }, f'checkpoints/{args.experiment}/{args.experiment}_{epoch}.pt')
 
             print("\nEpoch: {}, Train Loss: {:.6f}, Train Grad Norm: {:.6f}, Test Loss: {:.6f}".format(
                 epoch, train_loss, train_grad_norm, test_loss
