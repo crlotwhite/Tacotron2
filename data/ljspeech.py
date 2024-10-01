@@ -153,8 +153,8 @@ def load_data():
 
     collate_fn = Collate()
     train_loader = DataLoader(train_dataset, batch_size=64, shuffle=True, drop_last=False,
-                              collate_fn=collate_fn, pin_memory=True)
+                              collate_fn=collate_fn, pin_memory=True, pin_memory_device='cuda')
     test_loader = DataLoader(test_dataset, batch_size=64, shuffle=False, drop_last=False,
-                              collate_fn=collate_fn)
+                              collate_fn=collate_fn, pin_memory=True, pin_memory_device='cuda')
 
     return train_loader, test_loader
