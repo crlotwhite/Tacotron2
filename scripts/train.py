@@ -6,7 +6,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 
-from data.ljspeech import vocab, LJSPEECH_STORE_PATH, load_data
+from data.ljspeech import vocab, load_data
 from models.tacotron import Tacotron2
 from models.loss import Tacotron2Loss
 from pathlib import Path
@@ -69,11 +69,6 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     gc.disable()
-
-    # if os.path.exists(LJSPEECH_STORE_PATH):
-    #     train_loader, test_loader = from_disk()
-    # else:
-    #     train_loader, test_loader = from_hf()
 
     train_loader, test_loader = load_data()
 
@@ -146,7 +141,7 @@ if __name__ == '__main__':
                     'optimizer_state_dict': optimizer.state_dict(),
                 }, f'checkpoints/{args.experiment}/{args.experiment}_{epoch}.pt')
 
-            print("\nEpoch: {}, Train Loss: {:.6f}, Train Grad Norm: {:.6f}, Test Loss: {:.6f}".format(
+            print("\nEpoch: {}, Train Loss: {:.6f}, Train Grad Norm: {:.6f}, Test Loss: {:.6f}\n".format(
                 epoch, train_loss, train_grad_norm, test_loss
             ))
     finally:
