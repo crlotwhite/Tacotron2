@@ -70,6 +70,8 @@ if __name__ == '__main__':
 
     gc.disable()
 
+    os.makedirs(f'checkpoints/{args.experiment}', exist_ok=True)
+
     train_loader, test_loader = load_data()
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
