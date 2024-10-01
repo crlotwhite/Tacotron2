@@ -115,7 +115,7 @@ if __name__ == '__main__':
                 for idx in range(5):
                     mel_output = mel_outputs[idx]
                     mel_target = mel_targets[idx]
-                    mel_length = torch.Tensor(mel_target.size(1))
+                    # mel_length = torch.Tensor(mel_target.size(1))
 
                     # Mel-spectrograms
                     writer.add_image(f'Mel-spectrogram/output_epoch_{epoch}_sample_{idx}', mel_output, dataformats='HW')
