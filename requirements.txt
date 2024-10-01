@@ -1,4 +1,2 @@
-datasets
-librosa
 tqdm
 tensorboard
