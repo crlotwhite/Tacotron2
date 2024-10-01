@@ -152,9 +152,9 @@ def load_data():
     train_dataset, test_dataset = torch.utils.data.random_split(dataset, [0.8, 0.2])
 
     collate_fn = Collate()
-    train_loader = DataLoader(train_dataset, batch_size=64, shuffle=True, drop_last=False,
-                              collate_fn=collate_fn, pin_memory=True, pin_memory_device='cuda')
-    test_loader = DataLoader(test_dataset, batch_size=64, shuffle=False, drop_last=False,
-                              collate_fn=collate_fn, pin_memory=True, pin_memory_device='cuda')
+    train_loader = DataLoader(train_dataset, batch_size=64, shuffle=True, collate_fn=collate_fn,
+                              pin_memory=True, pin_memory_device='cuda')
+    test_loader = DataLoader(test_dataset, batch_size=64, shuffle=False, collate_fn=collate_fn,
+                             pin_memory=True, pin_memory_device='cuda')
 
     return train_loader, test_loader
