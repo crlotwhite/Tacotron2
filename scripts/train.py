@@ -6,7 +6,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 
-from data.ljspeech import from_hf, vocab
+from data.ljspeech import vocab, LJSPEECH_STORE_PATH, load_data
 from models.tacotron import Tacotron2
 from models.loss import Tacotron2Loss
 from pathlib import Path
@@ -69,6 +69,14 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     gc.disable()
+
+    # if os.path.exists(LJSPEECH_STORE_PATH):
+    #     train_loader, test_loader = from_disk()
+    # else:
+    #     train_loader, test_loader = from_hf()
+
+    train_loader, test_loader = load_data()
+
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = Tacotron2(vocab_size=len(vocab),
                       mask_padding=True,
@@ -84,7 +92,6 @@ if __name__ == '__main__':
                            lr=learning_rate,
                            weight_decay=weight_decay)
     criterion = Tacotron2Loss()
-    train_loader, test_loader = from_hf()
     vocoder = bundle.get_vocoder()
     writer = SummaryWriter(log_dir=f'logs/{args.experiment}')
     epoch_start = 1
