@@ -1,2 +1,4 @@
+h5py
+librosa
 tqdm
 tensorboard
