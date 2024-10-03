@@ -31,6 +31,14 @@ train:
   total_epochs: 100
   loss_function: Tacotron2Loss
   interval_tensorboard: 5
-  sampling_data: 5
   experiment_name: test123
   resume_from: -1
+test:
+  cases: [
+    "than in the same operations with ugly ones.",
+    "A further development of the Roman letter took place at Venice.",
+    "The day room was fitted with benches and settles after the manner of the tap in a public-house.",
+    "This was notably the case with the early works printed at Ulm, and in a somewhat lesser degree at Augsburg.",
+    "result in some degree of interference with the personal liberty of those involved.",
+    "We have, therefore,"
+  ]

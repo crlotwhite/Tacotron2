@@ -6,11 +6,12 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 
-from data.ljspeech import load_data
+from data.ljspeech import load_data, text_normalize, char2idx
 from models.tacotron import Tacotron2
 from models.loss import Tacotron2Loss
 from pathlib import Path
 from torch.utils.tensorboard import SummaryWriter
+from torchaudio.prototype.pipelines import HIFIGAN_VOCODER_V3_LJSPEECH as bundle
 from tqdm import tqdm
 
 root_dir = Path(__file__).parent.parent.resolve()
@@ -87,9 +88,11 @@ def main(cfg):
                            lr=learning_rate,
                            weight_decay=weight_decay)
     criterion = Tacotron2Loss()
-    
-    writer = SummaryWriter(log_dir=f'logs/{experiment_name}')
+
     epoch_start = 1
+
+    vocoder = bundle.get_vocoder()
+    vocoder.to(device)
 
     if resume_from > 0:
         checkpoint = torch.load(f'checkpoints/{experiment_name}/{experiment_name}_{resume_from}.pt')
@@ -98,6 +101,7 @@ def main(cfg):
         epoch_start = checkpoint['epoch']
 
     try:
+        writer = SummaryWriter(log_dir=f'logs/{experiment_name}')
         for epoch in range(epoch_start, total_epochs + 1):
             train_loss, train_grad_norm = train_loop(train_loader, model, optimizer, criterion)
             test_loss = eval_loop(test_loader, model, criterion)
@@ -106,23 +110,23 @@ def main(cfg):
             writer.add_scalar('Loss/valid', test_loss, epoch)
 
             if epoch % cfg.train.interval_tensorboard == 0:
-                batch = next(iter(test_loader))
-                x, y = Tacotron2.parse_batch(batch)
-                text_inputs, text_lengths, mels, max_len, output_lengths = x
-                mel_out, _, _, _ = model(text_inputs, text_lengths, mels, max_len, output_lengths)
-                mel_outputs = mel_out.detach().cpu().numpy()
-                mel_targets = mels.detach().cpu().numpy()
-                for idx in range(cfg.train.sampling_data):
-                    mel_output = mel_outputs[idx]
-                    mel_target = mel_targets[idx]
+                for i, text in enumerate(cfg.test.cases):
+                    sequence = text_normalize(text)
+                    sequence = [[char2idx[char] for char in sequence]]
+                    sequence = torch.IntTensor(sequence).to(device)
+                    mel_outputs, mel_outputs_postnet, _, alignments = model.inference(sequence)
 
                     # Mel-spectrograms
-                    writer.add_image(f'Mel-spectrogram/output_epoch_{epoch}_sample_{idx}', mel_output, dataformats='HW')
-                    writer.add_image(f'Mel-spectrogram/target_epoch_{epoch}_sample_{idx}', mel_target, dataformats='HW')
+                    writer.add_image(f'Mel-spectrogram/melout_{i}', mel_outputs, epoch)
+                    writer.add_image(f'Mel-spectrogram/postnet_{i}', mel_outputs_postnet, epoch)
 
-                    # Attention Map
-                    attention_map = model.decoder.attention_map.detach().cpu().numpy()
-                    writer.add_image(f'Attention Map/epoch_{epoch}_sample_{idx}', attention_map[idx], dataformats='HW')
+                    # Alignment
+                    writer.add_image(f'Alignment/sample_{i}', alignments, epoch)
+
+                    # Audio
+                    audio_output = vocoder(mel_outputs_postnet).squeeze(0)
+                    audio_output = audio_output.detach().cpu().numpy()
+                    writer.add_audio(f'audio/sample_{i}', audio_output, epoch, bundle.sample_rate)
 
                 # checkpoints
                 torch.save({
