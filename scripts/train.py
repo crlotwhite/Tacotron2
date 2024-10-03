@@ -60,6 +60,7 @@ def eval_loop():
 
     return total_loss / len(test_loader)
 
+# TODO: yaml에서 하이퍼 파라미터 읽어오기
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--experiment', type=str, required=True)
