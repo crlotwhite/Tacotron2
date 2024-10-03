@@ -32,3 +32,5 @@ train:
   loss_function: Tacotron2Loss
   interval_tensorboard: 5
   sampling_data: 5
+  experiment_name: test123
+  resume_from: -1

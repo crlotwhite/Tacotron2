@@ -10,6 +10,7 @@ from models.utils import to_gpu, get_mask_from_lengths
 
 class Tacotron2(nn.Module):
     def __init__(self,
+                 cfg,
                  vocab_size,
                  mask_padding,
                  n_mel_channels,
@@ -24,26 +25,26 @@ class Tacotron2(nn.Module):
         std = math.sqrt(2.0 / (vocab_size + symbols_embedding_dim))
         val = math.sqrt(3.0) * std
         self.embedding.weight.data.uniform_(-val, val)
-        self.encoder = Encoder(embed_dim=512,
-                               n_layers=3,
-                               kernel_size=5)
+        self.encoder = Encoder(embed_dim=cfg.encoder.embed_dim,
+                               n_layers=cfg.encoder.n_layers,
+                               kernel_size=cfg.encoder.kernel_size)
         self.decoder = Decoder(n_mel_channels=n_mel_channels,
                                n_frames_per_step=n_frames_per_step,
-                               encoder_embed_dim=512,
-                               attn_rnn_dim=1024,
-                               attn_dim=128,
-                               attn_location_n_filters=32,
-                               attn_location_kernel_size=31,
-                               decoder_rnn_dim=1024,
-                               prenet_dim=256,
-                               max_decoder_steps=1000,
-                               gate_threshold=0.5,
-                               p_attn_dropout=0.1,
-                               p_decoder_dropout=0.1)
+                               encoder_embed_dim=cfg.encoder.embed_dim,
+                               attn_rnn_dim=cfg.attention.rnn_dim,
+                               attn_dim=cfg.attention.attn_dim,
+                               attn_location_n_filters=cfg.location.n_filters,
+                               attn_location_kernel_size=cfg.location.kernel_size,
+                               decoder_rnn_dim=cfg.decoder.rnn_dim,
+                               prenet_dim=cfg.decoder.prenet_dim,
+                               max_decoder_steps=cfg.decoder.max_steps,
+                               gate_threshold=cfg.decoder.gate_threshold,
+                               p_attn_dropout=cfg.attention.p_dropout,
+                               p_decoder_dropout=cfg.decoder.p_dropout)
         self.postnet = Postnet(n_mel_channels=n_mel_channels,
-                               embed_dim=512,
-                               kernel_size=5,
-                               n_layers=5)
+                               embed_dim=cfg.postnet.embed_dim,
+                               kernel_size=cfg.postnet.kernel_size,
+                               n_layers=cfg.postnet.n_layers)
 
     @classmethod
     def parse_batch(cls, batch):
