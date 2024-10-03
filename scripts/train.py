@@ -61,7 +61,7 @@ def eval_loop(data_loader, model, criterion):
 
     return total_loss / len(data_loader)
 
-@hydra.main(config_path="../configs", config_name="config", version_base=None)
+@hydra.main(config_path='../configs', config_name='config', version_base=None)
 def main(cfg):
     experiment_name = cfg.train.experiment_name
     resume_from = cfg.train.resume_from
@@ -72,7 +72,7 @@ def main(cfg):
 
     train_loader, test_loader = load_data()
 
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     model = Tacotron2(cfg=cfg,
                       vocab_size=cfg.common.vocab_size,
                       mask_padding=cfg.common.mask_padding,
@@ -135,7 +135,7 @@ def main(cfg):
                     'optimizer_state_dict': optimizer.state_dict(),
                 }, f'checkpoints/{experiment_name}/{experiment_name}_{epoch}.pt')
 
-            print("\nEpoch: {}, Train Loss: {:.6f}, Train Grad Norm: {:.6f}, Test Loss: {:.6f}\n".format(
+            print('\nEpoch: {}, Train Loss: {:.6f}, Train Grad Norm: {:.6f}, Test Loss: {:.6f}\n'.format(
                 epoch, train_loss, train_grad_norm, test_loss
             ))
     finally:

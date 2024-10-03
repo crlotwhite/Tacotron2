@@ -5,7 +5,7 @@ import unicodedata
 
 from torch.utils.data import DataLoader
 
-vocab = " abcdefghijklmnopqrstuvwxyz'.?"  # P: Padding, E: EOS.
+vocab = ' abcdefghijklmnopqrstuvwxyz\'.?'  # P: Padding, E: EOS.
 char2idx = {char: idx for idx, char in enumerate(vocab)}
 idx2char = {idx: char for idx, char in enumerate(vocab)}
 
@@ -14,8 +14,8 @@ def text_normalize(text):
                    if unicodedata.category(char) != 'Mn')  # Strip accents
 
     text = text.lower()
-    text = re.sub("[^{}]".format(vocab), " ", text)
-    text = re.sub("[ ]+", " ", text)
+    text = re.sub('[^{}]'.format(vocab), ' ', text)
+    text = re.sub('[ ]+', ' ', text)
     return text
 
 class Collate:
@@ -65,13 +65,13 @@ class Collate:
 
 def load_data():
     LJSpeech_url = 'https://data.keithito.com/data/speech/LJSpeech-1.1.tar.bz2'
-    dataset = torchaudio.datasets.LJSPEECH("", url=LJSpeech_url, download=True)
+    dataset = torchaudio.datasets.LJSPEECH('', url=LJSpeech_url, download=True)
     train_dataset, test_dataset = torch.utils.data.random_split(dataset, [0.8, 0.2])
 
     collate_fn = Collate()
-    train_loader = DataLoader(train_dataset, batch_size=64, shuffle=True, collate_fn=collate_fn,
+    train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True, collate_fn=collate_fn,
                               pin_memory=True, pin_memory_device='cuda')
-    test_loader = DataLoader(test_dataset, batch_size=64, shuffle=False, collate_fn=collate_fn,
+    test_loader = DataLoader(test_dataset, batch_size=32, shuffle=False, collate_fn=collate_fn,
                              pin_memory=True, pin_memory_device='cuda')
 
     return train_loader, test_loader

@@ -38,7 +38,7 @@ class ConvNorm(CommonNorm):
         bias = kwargs.get('bias', True)
 
         if padding is None:
-            assert kernel_size % 2 == 1, "kernel size must be odd for padding"
+            assert kernel_size % 2 == 1, 'kernel size must be odd for padding'
             padding = dilation * (kernel_size - 1) // 2
         return nn.Conv1d(in_channels,
                          out_channels,
