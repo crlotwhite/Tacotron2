@@ -21,11 +21,30 @@ export PYTHONPATH=.
 
 ## Result
 
-### Attention Map
+### case 0
 
-### Audio
+Text: than in the same operations with ugly ones.
 
-### Mel-spectrogram
+### case 1
+
+Text: A further development of the Roman letter took place at Venice.
+
+### case 2
+
+Text: The day room was fitted with benches and settles after the manner of the tap in a public-house.
+
+### case 3
+
+Text: This was notably the case with the early works printed at Ulm, and in a somewhat lesser degree at Augsburg.
+
+### case 4
+
+Text: result in some degree of interference with the personal liberty of those involved.
+
+### case 5
+
+Text: We have, therefore,
+
 
 ## References
 - Tacotron2 paper
