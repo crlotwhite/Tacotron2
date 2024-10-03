@@ -13,6 +13,16 @@ pip install -r requirements.txt
 export PYTHONPATH=.
 ```
 
+### Train
+
+1. data preprocessing
+2. run train script
+
+```shell
+python scripts/preprocessing.py -cn ljspeech
+python scripts/train.py -cn ljspeech
+```
+
 ### Environment
 - OS: Windows 11, Ubuntu 22.04 LTS
 - Python: 3.11
