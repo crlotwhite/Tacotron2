@@ -11,7 +11,6 @@ from models.tacotron import Tacotron2
 from models.loss import Tacotron2Loss
 from pathlib import Path
 from torch.utils.tensorboard import SummaryWriter
-from torchaudio.prototype.pipelines import HIFIGAN_VOCODER_V3_LJSPEECH as bundle
 from tqdm import tqdm
 
 root_dir = Path(__file__).parent.parent.resolve()
@@ -89,7 +88,7 @@ if __name__ == '__main__':
                            lr=learning_rate,
                            weight_decay=weight_decay)
     criterion = Tacotron2Loss()
-    vocoder = bundle.get_vocoder()
+    
     writer = SummaryWriter(log_dir=f'logs/{args.experiment}')
     epoch_start = 1
 
@@ -117,20 +116,10 @@ if __name__ == '__main__':
                 for idx in range(5):
                     mel_output = mel_outputs[idx]
                     mel_target = mel_targets[idx]
-                    # mel_length = torch.Tensor(mel_target.size(1))
 
                     # Mel-spectrograms
                     writer.add_image(f'Mel-spectrogram/output_epoch_{epoch}_sample_{idx}', mel_output, dataformats='HW')
                     writer.add_image(f'Mel-spectrogram/target_epoch_{epoch}_sample_{idx}', mel_target, dataformats='HW')
-                    
-                    # TODO: Audio 출력 기능 수정하기
-                    # Audio
-                    # audio_output = vocoder(mel_output, lengths=mel_length).squeeze(0)
-                    # audio_target = vocoder(mel_target, lengths=mel_length).squeeze(0)
-                    # writer.add_audio(f'Audio/output_epoch_{epoch}_sample_{idx}', audio_output,
-                    #                  sample_rate=bundle.sample_rate)
-                    # writer.add_audio(f'Audio/target_epoch_{epoch}_sample_{idx}', audio_target,
-                    #                  sample_rate=bundle.sample_rate)
 
                     # Attention Map
                     attention_map = model.decoder.attention_map.detach().cpu().numpy()

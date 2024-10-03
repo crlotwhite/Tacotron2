@@ -1,2 +1,8 @@
 venv
 .idea
+LJSppech-1.1
+*.tar.bz2
+LJSpeech-1.1/*
+*.pt
+*.pyc
+logs/
