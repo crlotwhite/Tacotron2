@@ -6,3 +6,5 @@ LJSpeech-1.1/*
 *.pt
 *.pyc
 logs/
+*.wav
+outputs

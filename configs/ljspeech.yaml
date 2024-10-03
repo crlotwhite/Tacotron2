@@ -1,3 +1,5 @@
+preprocessor: "preprocessors.ljspeech.LJSpeechPreprocessor"
+datapath: "data/ljspeech"
 common:
   vocab_size: 30
   mask_padding: True
