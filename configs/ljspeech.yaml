@@ -1,0 +1,34 @@
+common:
+  vocab_size: 30
+  mask_padding: True
+  n_mel_channels: 80
+  n_frames_per_step: 1
+  symbols_embedding_dim: 512
+encoder:
+  embed_dim: 512
+  n_layers: 3
+  kernel_size: 5
+attention:
+  rnn_dim: 1024
+  attn_dim: 128
+  p_dropout: 0.1
+decoder:
+  rnn_dim: 1024
+  prenet_dim: 256
+  max_steps: 1000
+  gate_threshold: 0.5
+  p_dropout: 0.1
+location:
+  n_filters: 32
+  kernel_size: 31
+postnet:
+  embed_dim: 512
+  kernel_size: 5
+  n_layers: 5
+train:
+  learning_rate: 1e-3
+  weight_decay: 1e-6
+  total_epochs: 100
+  loss_function: Tacotron2Loss
+  interval_tensorboard: 5
+  sampling_data: 5
