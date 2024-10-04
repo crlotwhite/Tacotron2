@@ -11,12 +11,16 @@ from bases.preprocessor import Preprocessor
 
 class LJSpeechPreprocessor(Preprocessor):
     def __init__(self, data_path):
-        self.root = pathlib.Path(data_path)
+        self._root = pathlib.Path(data_path)
         self.metadata = self.root / 'metadata.csv'
         self.wav_files = self.root / 'wavs'
         self.vocab = ' abcdefghijklmnopqrstuvwxyz\'.?'  # P: Padding, E: EOS.
         self.char2idx = {char: idx for idx, char in enumerate(self.vocab)}
         self.idx2char = {idx: char for idx, char in enumerate(self.vocab)}
+
+    @property
+    def root(self):
+        return self._root
     
     def get_meta_data(self):
         meta_data = {
