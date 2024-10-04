@@ -7,16 +7,17 @@ import re
 import tqdm
 import unicodedata
 
-from bases.preprocessor import Preprocessor
+from bases.base_preprocessor import BasePreprocessor
 
-class LJSpeechPreprocessor(Preprocessor):
+class LJSpeechPreprocessor(BasePreprocessor):
+    vocab = ' abcdefghijklmnopqrstuvwxyz\'.?'
+    char2idx = {char: idx for idx, char in enumerate(vocab)}
+    idx2char = {idx: char for idx, char in enumerate(vocab)}
+
     def __init__(self, data_path):
         self._root = pathlib.Path(data_path)
         self.metadata = self.root / 'metadata.csv'
         self.wav_files = self.root / 'wavs'
-        self.vocab = ' abcdefghijklmnopqrstuvwxyz\'.?'  # P: Padding, E: EOS.
-        self.char2idx = {char: idx for idx, char in enumerate(self.vocab)}
-        self.idx2char = {idx: char for idx, char in enumerate(self.vocab)}
 
     @property
     def root(self):
@@ -63,14 +64,15 @@ class LJSpeechPreprocessor(Preprocessor):
                                               fmin=0.0, 
                                               fmax=8000.0)
         return mels
-    
-    def text_processing(self, text):
+
+    @classmethod
+    def text_processing(cls, text):
         text = ''.join(char for char in unicodedata.normalize('NFD', text)
                    if unicodedata.category(char) != 'Mn')  # Strip accents
 
         text = text.lower()
-        text = re.sub('[^{}]'.format(self.vocab), ' ', text)
+        text = re.sub('[^{}]'.format(cls.vocab), ' ', text)
         text = re.sub('[ ]+', ' ', text)
-        text = [self.char2idx[char] for char in text]
+        text = [cls.char2idx[char] for char in text]
         text = np.array(text)
         return text

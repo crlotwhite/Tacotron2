@@ -1,4 +1,5 @@
 preprocessor: "preprocessors.ljspeech.LJSpeechPreprocessor"
+trainer: "trainers.ljspeech.LJSpeechTrainer"
 datapath: "data/ljspeech"
 common:
   vocab_size: 30
@@ -28,6 +29,7 @@ postnet:
   kernel_size: 5
   n_layers: 5
 train:
+  batch_size: 32
   learning_rate: 1e-3
   weight_decay: 1e-6
   total_epochs: 100

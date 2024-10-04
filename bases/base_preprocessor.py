@@ -13,7 +13,7 @@ def meta_data_checker(meta_data: dict):
     key_check(meta_data['test'], 'text')
     key_check(meta_data['test'], 'audio')
 
-class Preprocessor(abc.ABC):
+class BasePreprocessor(abc.ABC):
     @property
     @abc.abstractmethod
     def root(self):
